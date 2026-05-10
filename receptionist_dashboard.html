@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receptionist Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="receptionist_dashboard.css">
+</head>
+<body>
+
+    <header class="top-header">
+        <a href="index.html" class="dashboard-link">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="#" class="dashboard-link">
+            <i class="fas fa-phone"></i>
+            <span>Help</span>
+        </a>
+    </header>
+
+    <div class="bg-image"></div>
+    <div class="overlay"></div>
+
+    <h1 id="welcome-heading" class="glowing-heading top-heading">Welcome Receptionist!</h1>
+
+    <div class="main-container">
+        <div class="dashboard-options">
+            <a href="add_patient.html" class="glass-card">
+                <div class="card-link-content">
+                    <img src="images/c1.jpg" alt="Add Patient" class="card-image">
+                    <span class="card-option-text">Add Patient</span>
+                </div>
+            </a>
+            <div class="glass-card">
+                <div class="card-link-content">
+                    <img src="images/d1.jpg" alt="View Available Doctors" class="card-image">
+                    <span class="card-option-text">View Available Doctors</span>
+                </div>
+            </div>
+            <a href="booking_requests.html" class="glass-card">
+                <div class="card-link-content">
+                    <img src="images/d1.jpg" alt="Booking Requests" class="card-image">
+                    <span class="card-option-text">Booking Requests</span>
+                </div>
+            </a>
+            <a href="view_patients.html" class="glass-card">
+                <div class="card-link-content">
+                    <img src="images/pp1.jpg" alt="View Patients" class="card-image">
+                    <span class="card-option-text">View Patients</span>
+                </div>
+            </a>
+
+            <div id="logout-btn" class="glass-card">
+                <div class="card-link-content">
+                    <img src="images/log1.jpg" alt="Logout" class="card-image">
+                    <span class="card-option-text logout">Logout</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Personalize Welcome Message
+            const user = JSON.parse(localStorage.getItem('user'));
+            const welcomeHeading = document.getElementById('welcome-heading');
+            if (user && user.name) {
+                welcomeHeading.textContent = `Hi, ${user.name}!`;
+            }
+
+            // Logout functionality
+            const logoutBtn = document.getElementById('logout-btn');
+            logoutBtn.onclick = function() {
+                localStorage.removeItem('user');
+                localStorage.removeItem('doctorName'); // Also clear doctorName just in case
+                window.location.href = 'staff_login.html';
+            }
+        });
+    </script>
+
+</body>
+</html>

@@ -25,9 +25,13 @@
             <i class="fas fa-user-md"></i>
             <span>View Doctors</span>
         </a>
-        <a href="view_staff.html" class="dashboard-link" style="margin-left: auto;">
+        <a href="view_staff.html" class="dashboard-link">
             <i class="fas fa-users"></i>
             <span>View Staff</span>
+        </a>
+        <a href="previous_patients.html" class="dashboard-link" style="margin-left: auto;">
+            <i class="fas fa-history"></i>
+            <span>Previous Patients</span>
         </a>
         <a href="#" class="dashboard-link">
             <i class="fas fa-sync-alt"></i>
@@ -67,10 +71,35 @@
                 </a>
             </div>
             <div class="glass-card">
+                <a href="#" class="card-link-content" onclick="openPasswordManagement(event)">
+                    <img src="images/admin 1.jpg" alt="Manage Password" class="card-image">
+                    <span class="card-option-text">Manage Staff Access Password</span>
+                </a>
+            </div>
+            <div class="glass-card">
                 <a href="#" class="card-link-content">
                     <img src="images/log1.jpg" alt="Logout" class="card-image">
                     <span class="card-option-text logout">Logout</span>
                 </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Password Management Popup -->
+    <div id="passwordPopup" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); z-index: 9999; justify-content: center; align-items: center;">
+        <div style="width: 90%; max-width: 500px; padding: 40px; background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(20px); border-radius: 20px; border: 2px solid rgba(255, 255, 255, 0.3); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);">
+            <h2 style="color: #fff; text-align: center; margin-bottom: 30px; font-size: 2em;">Manage Staff Access Password</h2>
+            <div style="margin-bottom: 20px;">
+                <label style="color: #fff; display: block; margin-bottom: 10px; font-size: 1.1em;">Current Password:</label>
+                <input type="text" id="currentPassword" readonly style="width: 100%; padding: 12px; border-radius: 8px; border: 2px solid rgba(255, 255, 255, 0.3); background: rgba(255, 255, 255, 0.15); color: #fff; font-size: 1em;">
+            </div>
+            <div style="margin-bottom: 20px;">
+                <label style="color: #fff; display: block; margin-bottom: 10px; font-size: 1.1em;">New Password:</label>
+                <input type="text" id="newPassword" placeholder="Enter new password" style="width: 100%; padding: 12px; border-radius: 8px; border: 2px solid rgba(255, 255, 255, 0.3); background: rgba(255, 255, 255, 0.15); color: #fff; font-size: 1em;">
+            </div>
+            <div style="display: flex; gap: 15px; margin-top: 30px;">
+                <button onclick="savePassword()" style="flex: 1; padding: 15px; border: none; border-radius: 10px; background: linear-gradient(135deg, #00b3b3, #00e6e6); color: #000; font-size: 1.1em; font-weight: 600; cursor: pointer;">Save Password</button>
+                <button onclick="closePasswordPopup()" style="flex: 1; padding: 15px; border: none; border-radius: 10px; background: rgba(255, 255, 255, 0.2); color: #fff; font-size: 1.1em; font-weight: 600; cursor: pointer;">Cancel</button>
             </div>
         </div>
     </div>
@@ -84,16 +113,52 @@
                 return;
             }
 
+            // Initialize default password if not set
+            if (!localStorage.getItem('staffAccessPassword')) {
+                localStorage.setItem('staffAccessPassword', 'staff');
+            }
+
             // Logout functionality
-            const logoutCard = document.querySelector('.glass-card a[href="#"][alt="Logout"]'); // Select the logout link
+            const logoutCard = document.querySelector('.glass-card a[href="#"][alt="Logout"]');
             if (logoutCard) {
                 logoutCard.addEventListener('click', function(event) {
                     event.preventDefault();
-                    localStorage.removeItem('isAdminLoggedIn'); // Clear login flag
-                    window.location.href = 'admin_login.html'; // Redirect to login page
+                    localStorage.removeItem('isAdminLoggedIn');
+                    sessionStorage.removeItem('staffAuthenticated');
+                    window.location.href = 'admin_login.html';
                 });
             }
         });
+
+        function openPasswordManagement(event) {
+            event.preventDefault();
+            const currentPassword = localStorage.getItem('staffAccessPassword') || 'staff';
+            document.getElementById('currentPassword').value = currentPassword;
+            document.getElementById('newPassword').value = '';
+            document.getElementById('passwordPopup').style.display = 'flex';
+        }
+
+        function closePasswordPopup() {
+            document.getElementById('passwordPopup').style.display = 'none';
+        }
+
+        function savePassword() {
+            const newPassword = document.getElementById('newPassword').value.trim();
+            if (!newPassword) {
+                alert('Please enter a new password');
+                return;
+            }
+            
+            // Save new password
+            localStorage.setItem('staffAccessPassword', newPassword);
+            
+            // Set notification for staff
+            localStorage.setItem('passwordUpdatedNotification', 'true');
+            localStorage.setItem('passwordUpdateTime', new Date().toISOString());
+            
+            alert('Staff Access Password Updated Successfully!\nAll staff members will be notified.');
+            closePasswordPopup();
+        }
     </script>
 
 </body>

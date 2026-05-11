@@ -230,5 +230,12 @@
 
     </div>
 
+    <script>
+        // Check if user is authenticated
+        if (sessionStorage.getItem('staffAuthenticated') !== 'true') {
+            window.location.href = 'staff_access_protection.html';
+        }
+    </script>
+
 </body>
 </html>

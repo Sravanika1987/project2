@@ -128,6 +128,16 @@
                         prescribeButton.classList.add(patient.medication ? 'medication-added' : 'medication-pending');
                         prescribeButton.dataset.patientId = patient.id;
                         actionCell.appendChild(prescribeButton);
+                        
+                        // Add Remove button
+                        const removeButton = document.createElement('button');
+                        removeButton.textContent = 'Remove';
+                        removeButton.classList.add('action-btn');
+                        removeButton.style.marginLeft = '10px';
+                        removeButton.style.background = 'linear-gradient(135deg, #ff6b6b, #ff5252)';
+                        removeButton.dataset.patientId = patient.id;
+                        removeButton.classList.add('remove-btn');
+                        actionCell.appendChild(removeButton);
                     });
                 }
             }
@@ -135,9 +145,9 @@
             // Initial render
             renderPatients();
 
-            // Event listener for Add/Edit Medication buttons
+            // Event listener for Add/Edit Medication buttons and Remove buttons
             patientsTable.addEventListener('click', function(event) {
-                if (event.target.classList.contains('action-btn')) {
+                if (event.target.classList.contains('action-btn') && !event.target.classList.contains('remove-btn')) {
                     currentPatientId = parseInt(event.target.dataset.patientId);
                     let allPatients = JSON.parse(localStorage.getItem('patients')) || [];
                     const patient = allPatients.find(p => p.id === currentPatientId);
@@ -146,6 +156,14 @@
                         patientNameInModal.textContent = patient.name;
                         medicationDetailsTextarea.value = patient.medication || ''; // Pre-fill if exists
                         medicationModal.style.display = 'block';
+                    }
+                }
+                
+                // Handle Remove button
+                if (event.target.classList.contains('remove-btn')) {
+                    const patientId = parseInt(event.target.dataset.patientId);
+                    if (confirm('Are you sure you want to remove this patient? They will be moved to Previous Patients.')) {
+                        removePatient(patientId);
                     }
                 }
             });
@@ -179,6 +197,32 @@
                     renderPatients(); // Re-render table to update medication status and button color
                 }
             });
+            
+            // Remove Patient function
+            function removePatient(patientId) {
+                let allPatients = JSON.parse(localStorage.getItem('patients')) || [];
+                const patientIndex = allPatients.findIndex(p => p.id === patientId);
+                
+                if (patientIndex > -1) {
+                    const patient = allPatients[patientIndex];
+                    
+                    // Add to previous patients
+                    let previousPatients = JSON.parse(localStorage.getItem('previousPatients') || '[]');
+                    previousPatients.push({
+                        ...patient,
+                        removedDate: new Date().toLocaleString()
+                    });
+                    localStorage.setItem('previousPatients', JSON.stringify(previousPatients));
+                    
+                    // Remove from current patients
+                    allPatients.splice(patientIndex, 1);
+                    localStorage.setItem('patients', JSON.stringify(allPatients));
+                    
+                    // Re-render table
+                    renderPatients();
+                    alert('Patient removed successfully and moved to Previous Patients.');
+                }
+            }
         });
     </script>
 </body>

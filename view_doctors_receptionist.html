@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Doctors - Receptionist Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            color: #fff;
+            padding: 100px 20px 50px;
+        }
+
+        .bg-image {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('images/hi1.jpg');
+            background-size: cover;
+            background-position: center;
+            filter: blur(3px) brightness(1.2);
+            z-index: -2;
+        }
+
+        .overlay {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 20, 40, 0.6);
+            z-index: -1;
+        }
+
+        .top-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .dashboard-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.1em;
+            font-weight: 500;
+            text-shadow: 0 0 8px rgba(0, 0, 0, 0.7);
+            transition: all 0.3s ease;
+        }
+
+        .dashboard-link:hover {
+            color: #00e6e6;
+            text-shadow: 0 0 12px #00e6e6;
+            transform: scale(1.05);
+        }
+
+        .dashboard-link i {
+            font-size: 1.2em;
+        }
+
+        .main-title {
+            font-size: 3em;
+            font-weight: 600;
+            margin-bottom: 50px;
+            color: #fff;
+            text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px #00e6e6, 0 0 30px #00e6e6;
+            text-align: center;
+        }
+
+        .doctors-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .doctor-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 30px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .doctor-card:hover {
+            transform: translateY(-10px) scale(1.03);
+            box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.45);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .doctor-icon {
+            font-size: 4em;
+            color: #00e6e6;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(0, 230, 230, 0.5);
+        }
+
+        .doctor-name {
+            font-size: 1.8em;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        }
+
+        .doctor-category {
+            font-size: 1.2em;
+            color: #00e6e6;
+            font-weight: 500;
+            margin-bottom: 15px;
+        }
+
+        .doctor-id {
+            font-size: 1em;
+            color: rgba(255, 255, 255, 0.7);
+            font-style: italic;
+        }
+
+        .no-doctors {
+            text-align: center;
+            font-size: 1.5em;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 50px;
+            grid-column: 1 / -1;
+        }
+
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 2em;
+            }
+            .doctors-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="top-header">
+        <a href="receptionist_dashboard.html" class="dashboard-link">
+            <i class="fas fa-arrow-left"></i>
+            <span>Back to Dashboard</span>
+        </a>
+        <a href="index.html" class="dashboard-link">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+    </header>
+
+    <div class="bg-image"></div>
+    <div class="overlay"></div>
+
+    <h1 class="main-title">Available Doctors</h1>
+
+    <div class="doctors-container" id="doctorsContainer">
+        <div class="no-doctors">No doctors available</div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDoctors();
+        });
+
+        function loadDoctors() {
+            // Get doctors from localStorage
+            const doctors = JSON.parse(localStorage.getItem('doctors') || '[]');
+            const container = document.getElementById('doctorsContainer');
+            
+            if (doctors.length === 0) {
+                container.innerHTML = '<div class="no-doctors">No doctors available</div>';
+                return;
+            }
+
+            container.innerHTML = doctors.map(doctor => `
+                <div class="doctor-card">
+                    <div class="doctor-icon">
+                        <i class="fas fa-user-md"></i>
+                    </div>
+                    <div class="doctor-name">${doctor.name || 'Dr. Unknown'}</div>
+                    <div class="doctor-category">${doctor.category || 'General'}</div>
+                    <div class="doctor-id">ID: ${doctor.doctorId || 'N/A'}</div>
+                </div>
+            `).join('');
+        }
+    </script>
+
+</body>
+</html>

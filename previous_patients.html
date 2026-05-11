@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Previous Patients - Admin Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            color: #fff;
+            padding: 100px 20px 50px;
+        }
+
+        .bg-image {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('images/hi1.jpg');
+            background-size: cover;
+            background-position: center;
+            filter: blur(3px) brightness(1.2);
+            z-index: -2;
+        }
+
+        .overlay {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 20, 40, 0.6);
+            z-index: -1;
+        }
+
+        .top-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .dashboard-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.1em;
+            font-weight: 500;
+            text-shadow: 0 0 8px rgba(0, 0, 0, 0.7);
+            transition: all 0.3s ease;
+        }
+
+        .dashboard-link:hover {
+            color: #00e6e6;
+            text-shadow: 0 0 12px #00e6e6;
+            transform: scale(1.05);
+        }
+
+        .dashboard-link i {
+            font-size: 1.2em;
+        }
+
+        .main-title {
+            font-size: 3em;
+            font-weight: 600;
+            margin-bottom: 40px;
+            color: #fff;
+            text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px #00e6e6, 0 0 30px #00e6e6;
+            text-align: center;
+        }
+
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto 30px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 1.1em;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            color: #fff;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #00e6e6;
+            box-shadow: 0 0 20px rgba(0, 230, 230, 0.3);
+        }
+
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .patients-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .patient-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 25px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            transition: all 0.3s ease;
+        }
+
+        .patient-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.45);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .patient-info {
+            margin-bottom: 12px;
+        }
+
+        .patient-label {
+            font-weight: 600;
+            color: #00e6e6;
+            margin-right: 8px;
+        }
+
+        .patient-value {
+            color: #fff;
+        }
+
+        .no-patients {
+            text-align: center;
+            font-size: 1.5em;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 50px;
+        }
+
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 2em;
+            }
+            .patients-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="top-header">
+        <a href="admin_dashboard.html" class="dashboard-link">
+            <i class="fas fa-arrow-left"></i>
+            <span>Back to Dashboard</span>
+        </a>
+        <a href="index.html" class="dashboard-link">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+    </header>
+
+    <div class="bg-image"></div>
+    <div class="overlay"></div>
+
+    <h1 class="main-title">Previous Patients</h1>
+
+    <div class="search-container">
+        <input type="text" id="searchInput" class="search-input" placeholder="Search by patient name, phone, or category...">
+    </div>
+
+    <div class="patients-container" id="patientsContainer">
+        <div class="no-patients">No previous patients found</div>
+    </div>
+
+    <script>
+        let allPatients = [];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check admin login
+            if (localStorage.getItem('isAdminLoggedIn') !== 'true') {
+                window.location.href = 'admin_login.html';
+                return;
+            }
+
+            loadPreviousPatients();
+
+            // Search functionality
+            document.getElementById('searchInput').addEventListener('input', function(e) {
+                filterPatients(e.target.value);
+            });
+        });
+
+        function loadPreviousPatients() {
+            // Get previous patients from localStorage
+            const previousPatients = JSON.parse(localStorage.getItem('previousPatients') || '[]');
+            allPatients = previousPatients;
+            displayPatients(allPatients);
+        }
+
+        function displayPatients(patients) {
+            const container = document.getElementById('patientsContainer');
+            
+            if (patients.length === 0) {
+                container.innerHTML = '<div class="no-patients">No previous patients found</div>';
+                return;
+            }
+
+            container.innerHTML = patients.map(patient => `
+                <div class="patient-card">
+                    <div class="patient-info">
+                        <span class="patient-label">Name:</span>
+                        <span class="patient-value">${patient.name || 'N/A'}</span>
+                    </div>
+                    <div class="patient-info">
+                        <span class="patient-label">Age:</span>
+                        <span class="patient-value">${patient.age || 'N/A'}</span>
+                    </div>
+                    <div class="patient-info">
+                        <span class="patient-label">Phone:</span>
+                        <span class="patient-value">${patient.phone || 'N/A'}</span>
+                    </div>
+                    <div class="patient-info">
+                        <span class="patient-label">Gender:</span>
+                        <span class="patient-value">${patient.gender || 'N/A'}</span>
+                    </div>
+                    <div class="patient-info">
+                        <span class="patient-label">Category:</span>
+                        <span class="patient-value">${patient.category || 'N/A'}</span>
+                    </div>
+                    <div class="patient-info">
+                        <span class="patient-label">Problem:</span>
+                        <span class="patient-value">${patient.problem || 'N/A'}</span>
+                    </div>
+                    <div class="patient-info">
+                        <span class="patient-label">Medication:</span>
+                        <span class="patient-value">${patient.medication || 'N/A'}</span>
+                    </div>
+                    <div class="patient-info">
+                        <span class="patient-label">Removed Date:</span>
+                        <span class="patient-value">${patient.removedDate || 'N/A'}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterPatients(searchTerm) {
+            if (!searchTerm.trim()) {
+                displayPatients(allPatients);
+                return;
+            }
+
+            const filtered = allPatients.filter(patient => {
+                const search = searchTerm.toLowerCase();
+                return (
+                    (patient.name && patient.name.toLowerCase().includes(search)) ||
+                    (patient.phone && patient.phone.includes(search)) ||
+                    (patient.category && patient.category.toLowerCase().includes(search)) ||
+                    (patient.problem && patient.problem.toLowerCase().includes(search))
+                );
+            });
+
+            displayPatients(filtered);
+        }
+    </script>
+
+</body>
+</html>

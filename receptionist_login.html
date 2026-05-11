@@ -212,6 +212,11 @@
     </div>
 
     <script>
+        // Check if user is authenticated to access staff area
+        if (sessionStorage.getItem('staffAuthenticated') !== 'true') {
+            window.location.href = 'staff_access_protection.html';
+        }
+        
         document.getElementById('login-form').addEventListener('submit', function(event) {
             event.preventDefault();
             // Redirect to the receptionist dashboard directly, bypassing backend validation
